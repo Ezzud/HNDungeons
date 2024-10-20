@@ -1,0 +1,10 @@
+command:
+  permission: "dungeons.admin"
+  base-command-name: "dungeons"
+  aliases:
+    - "dungeon"
+  sub-commands:
+    "reload":
+      base-alias: "reload"
+      aliases:
+        - "reloadconfig"

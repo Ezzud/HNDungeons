@@ -1,0 +1,23 @@
+messages:
+  sending-error:
+    message:
+      enabled: true
+      value:
+        - "&b&lHorizon &8‣ &bError sending player to server."
+  no-permission:
+    message:
+      enabled: true
+      value:
+        - "&b&lHorizon &8‣ &bYou do not have permission to do this."
+  help:
+    message:
+      enabled: true
+      value:
+        - "&b&lHorizon &8‣ &b&lHelp"
+        - "&7"
+        - "&b&l• &3&l/dungeons reload &8- &bReloads plugin!."
+  reloaded:
+    message:
+      enabled: true
+      value:
+        - "&b&lHorizon &8‣ &bThe plugin Dungeons has been reloaded in &3%time%ms&b."
