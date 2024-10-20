@@ -1,8 +1,7 @@
 package gg.horizonnetwork.HNDungeons;
 
-import org.bukkit.plugin.java.JavaPlugin;
 
-public final class HNDungeons extends JavaPlugin {
+public final class HNDungeons extends TidePlugin {
 
     @Override
     public void onEnable() {
