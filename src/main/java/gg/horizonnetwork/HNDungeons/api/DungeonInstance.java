@@ -12,6 +12,7 @@ public class DungeonInstance {
 
     @Getter
     private final InstanceMemberManager party;
+    @Getter
     private final InstanceManager manager;
     @Getter
     @Setter
@@ -37,6 +38,10 @@ public class DungeonInstance {
         for(DungeonPlayer p : party.getPlayers()) {
             p.getPlayer().teleport(p.getOriginalLocation());
         }
+    }
+
+    public void end() {
+        this.manager.delete(this);
     }
 
 }
