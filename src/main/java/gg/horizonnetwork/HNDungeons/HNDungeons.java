@@ -2,6 +2,7 @@ package gg.horizonnetwork.HNDungeons;
 
 import gg.horizonnetwork.HNDungeons.commands.Dungeons;
 import gg.horizonnetwork.HNDungeons.commands.player.dHelp;
+import gg.horizonnetwork.HNDungeons.managers.InstanceManager;
 import gg.horizonnetwork.HNDungeons.storage.json.PlayerJsonStorage;
 import gg.techtide.tidelib.logger.TideLogger;
 import gg.techtide.tidelib.revamped.abysslibrary.PlaceholderReplacer;
@@ -46,8 +47,9 @@ public final class HNDungeons extends TidePlugin {
         TideLogger.console("Loading &fDungeons&b");
         this.loadMessages(this.messageCache, this.getYml("lang"));
 
-        this.loadStorage();
+        //this.loadStorage();
 
+        this.InstanceManager = new InstanceManager(this);
         this.DungeonsCommand.register();
         this.DungeonsCommand.register((CommandMap) new dHelp(this.DungeonsCommand.getPlugin()));
 
@@ -81,6 +83,7 @@ public final class HNDungeons extends TidePlugin {
 
         Bukkit.getOperators().stream().filter(OfflinePlayer::isOnline).forEach(player -> this.messageCache.sendMessage(player.getPlayer(), "messages.reloaded", new PlaceholderReplacer().addPlaceholder("%time%", Utils.format(elapsed))));
     }
+    /*
     private void loadStorage() {
         switch (this.storageType) {
             case JSON: {
@@ -98,5 +101,6 @@ public final class HNDungeons extends TidePlugin {
 
         TideLogger.console("  - Successfully loaded Storage! &8(&f" + this.storageType + "&7 Storage Method&8)");
     }
+    */
 
 }
