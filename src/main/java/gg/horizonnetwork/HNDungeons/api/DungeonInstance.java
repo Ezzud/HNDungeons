@@ -25,7 +25,7 @@ public class DungeonInstance {
 
     public DungeonInstance(InstanceManager instanceManager, int maxPlayers) {
         this.manager = instanceManager;
-        this.party = new InstanceMemberManager();
+        this.party = new InstanceMemberManager(this);
         this.maxPlayers = maxPlayers;
     }
 
