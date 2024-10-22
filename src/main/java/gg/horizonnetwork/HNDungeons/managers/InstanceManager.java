@@ -24,7 +24,7 @@ public class InstanceManager {
 
 
     public DungeonInstance create(String instanceType, DungeonPlayer host, int maxPlayers) {
-        DungeonWorld world = new DungeonWorld();
+        DungeonWorld world = new DungeonWorld(instanceType);
         world.generateWorld();
 
         DungeonInstance instance = new DungeonInstance(this, maxPlayers);

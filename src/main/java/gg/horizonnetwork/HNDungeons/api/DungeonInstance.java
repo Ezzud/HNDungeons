@@ -34,10 +34,20 @@ public class DungeonInstance {
         return id;
     }
 
+    public void teleportPartyIn() {
+        for(DungeonPlayer p : party.getPlayers()) {
+            p.getPlayer().teleport(world.getSpawnLocation());
+        }
+    }
+
     public void teleportPartyOut() {
         for(DungeonPlayer p : party.getPlayers()) {
             p.getPlayer().teleport(p.getOriginalLocation());
         }
+    }
+
+    public void start() {
+        teleportPartyIn();
     }
 
     public void end() {

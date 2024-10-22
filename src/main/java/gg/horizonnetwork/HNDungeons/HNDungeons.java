@@ -34,6 +34,7 @@ public final class HNDungeons extends TidePlugin {
 
     private Dungeons DungeonsCommand = new Dungeons(this);
     private CommonStorageImpl<UUID, Player> storage;
+    private InstanceManager InstanceManager;
 
     @Override
     public String pluginName() {
