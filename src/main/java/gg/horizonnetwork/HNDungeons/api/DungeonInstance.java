@@ -54,13 +54,14 @@ public class DungeonInstance {
 
     public void start() {
         teleportPartyIn();
+        summonEntities();
     }
 
     public void end() {
         this.manager.delete(this);
     }
 
-    public List<DungeonMob> getEntityToSpawn() {
+    public List<DungeonMob> summonEntities() {
         List<DungeonMob> entities = new ArrayList<>();
         ConfigurationSection mobsToSpawn = plugin.getConfig().getConfigurationSection("dungeons." + this.world.getOriginalWorld().getName() + ".mobs");
         if(mobsToSpawn != null) {
