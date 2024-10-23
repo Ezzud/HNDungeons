@@ -61,7 +61,7 @@ public class DungeonInstance {
         this.manager.delete(this);
     }
 
-    public List<DungeonMob> summonEntities() {
+    public void summonEntities() {
         List<DungeonMob> entities = new ArrayList<>();
         ConfigurationSection mobsToSpawn = plugin.getConfig().getConfigurationSection("dungeons." + this.world.getOriginalWorld().getName() + ".mobs");
         if(mobsToSpawn != null) {
@@ -94,7 +94,6 @@ public class DungeonInstance {
             }
         }
 
-        return entities;
     }
 
 }
