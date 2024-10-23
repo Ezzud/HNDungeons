@@ -2,8 +2,11 @@ package gg.horizonnetwork.HNDungeons;
 
 import gg.horizonnetwork.HNDungeons.commands.Dungeons;
 import gg.horizonnetwork.HNDungeons.commands.player.dHelp;
+import gg.horizonnetwork.HNDungeons.listener.StorageJoinLeaveListener;
 import gg.horizonnetwork.HNDungeons.managers.InstanceManager;
+import gg.horizonnetwork.HNDungeons.storage.DungeonProfile;
 import gg.horizonnetwork.HNDungeons.storage.json.PlayerJsonStorage;
+import gg.horizonnetwork.HNDungeons.storage.sql.PlayerSQLStorage;
 import gg.techtide.tidelib.logger.TideLogger;
 import gg.techtide.tidelib.revamped.abysslibrary.PlaceholderReplacer;
 import gg.techtide.tidelib.revamped.abysslibrary.config.TideConfig;
@@ -16,7 +19,6 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandMap;
-import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
@@ -33,7 +35,7 @@ public final class HNDungeons extends TidePlugin {
     private MessageCache messageCache = new MessageCache(this.getYml("lang"));
 
     private Dungeons DungeonsCommand = new Dungeons(this);
-    private CommonStorageImpl<UUID, Player> storage;
+    private CommonStorageImpl<UUID, DungeonProfile> storage;
     private InstanceManager InstanceManager;
 
     @Override
@@ -48,7 +50,7 @@ public final class HNDungeons extends TidePlugin {
         TideLogger.console("Loading &fDungeons&b");
         this.loadMessages(this.messageCache, this.getYml("lang"));
 
-        //this.loadStorage();
+        this.loadStorage();
 
         this.InstanceManager = new InstanceManager(this);
         this.DungeonsCommand.register();
@@ -84,7 +86,7 @@ public final class HNDungeons extends TidePlugin {
 
         Bukkit.getOperators().stream().filter(OfflinePlayer::isOnline).forEach(player -> this.messageCache.sendMessage(player.getPlayer(), "messages.reloaded", new PlaceholderReplacer().addPlaceholder("%time%", Utils.format(elapsed))));
     }
-    /*
+
     private void loadStorage() {
         switch (this.storageType) {
             case JSON: {
@@ -102,6 +104,5 @@ public final class HNDungeons extends TidePlugin {
 
         TideLogger.console("  - Successfully loaded Storage! &8(&f" + this.storageType + "&7 Storage Method&8)");
     }
-    */
 
 }

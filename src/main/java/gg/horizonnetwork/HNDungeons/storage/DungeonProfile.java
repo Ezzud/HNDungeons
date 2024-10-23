@@ -6,15 +6,13 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-public class Player {
+public final class DungeonProfile {
 
     @Id
     private final UUID uuid;
-    private boolean doubleJumpEnabled;
 
-    public Player() {
+    public DungeonProfile(final UUID uuid) {
         this.uuid = uuid;
-        this.doubleJumpEnabled = false;
     }
 
     private transient boolean loaded;
@@ -27,3 +25,4 @@ public class Player {
         this.loaded = true;
     }
 }
+
