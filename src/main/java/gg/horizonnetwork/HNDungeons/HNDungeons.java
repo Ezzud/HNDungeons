@@ -5,6 +5,8 @@ import gg.horizonnetwork.HNDungeons.commands.player.dHelp;
 import gg.horizonnetwork.HNDungeons.listener.StorageJoinLeaveListener;
 import gg.horizonnetwork.HNDungeons.managers.InstanceManager;
 import gg.horizonnetwork.HNDungeons.storage.DungeonProfile;
+import gg.horizonnetwork.HNDungeons.storage.InstanceProfile;
+import gg.horizonnetwork.HNDungeons.storage.json.InstanceJSONStorage;
 import gg.horizonnetwork.HNDungeons.storage.json.PlayerJsonStorage;
 import gg.horizonnetwork.HNDungeons.storage.sql.PlayerSQLStorage;
 import gg.techtide.tidelib.logger.TideLogger;
@@ -36,6 +38,7 @@ public final class HNDungeons extends TidePlugin {
 
     private Dungeons DungeonsCommand = new Dungeons(this);
     private CommonStorageImpl<UUID, DungeonProfile> storage;
+    private CommonStorageImpl<UUID, InstanceProfile> instanceStorage;
     private InstanceManager InstanceManager;
 
     @Override
@@ -91,6 +94,7 @@ public final class HNDungeons extends TidePlugin {
         switch (this.storageType) {
             case JSON: {
                 this.storage = new CommonStorageImpl<>(new PlayerJsonStorage(this));
+                this.instanceStorage = new CommonStorageImpl<>(new InstanceJSONStorage(this));
                 break;
             }
 

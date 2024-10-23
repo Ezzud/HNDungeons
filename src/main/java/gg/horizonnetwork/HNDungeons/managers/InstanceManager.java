@@ -4,6 +4,7 @@ import gg.horizonnetwork.HNDungeons.HNDungeons;
 import gg.horizonnetwork.HNDungeons.api.DungeonInstance;
 import gg.horizonnetwork.HNDungeons.api.DungeonPlayer;
 import gg.horizonnetwork.HNDungeons.api.DungeonWorld;
+import gg.horizonnetwork.HNDungeons.storage.InstanceProfile;
 import gg.horizonnetwork.HNDungeons.types.InstanceState;
 import lombok.Getter;
 
@@ -27,13 +28,17 @@ public class InstanceManager {
         DungeonWorld world = new DungeonWorld(instanceType);
         world.generateWorld();
 
-        DungeonInstance instance = new DungeonInstance(this, maxPlayers);
+        DungeonInstance instance = new DungeonInstance(this, maxPlayers, plugin);
         instance.setState(InstanceState.GENERATING);
         instance.getParty().add(host);
         instance.setId(UUID.randomUUID());
         instance.setWorld(world);
         instance.setState(InstanceState.WAITING);
         addInstance(instance);
+
+        InstanceProfile profile = new InstanceProfile(instance.getId(), instance);
+        profile.load();
+        plugin.getInstanceStorage().save(profile);
 
         return instance;
     }
@@ -42,6 +47,23 @@ public class InstanceManager {
         instance.teleportPartyOut();
         instance.getWorld().delete();
         removeInstance(instance);
+        plugin.getInstanceStorage().remove(instance.getId());
+    }
+
+    public DungeonInstance get(UUID id) {
+        InstanceProfile profile = plugin.getInstanceStorage().get(id);
+        if (profile == null) return null;
+        profile.load();
+        return profile.getInstance();
+    }
+
+    public DungeonInstance getFromCache(UUID id) {
+        for(DungeonInstance instance : instances) {
+            if (instance.getId().equals(id)) {
+                return instance;
+            }
+        }
+        return null;
     }
 
     public void addInstance(DungeonInstance instance) {
