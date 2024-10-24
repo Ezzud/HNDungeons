@@ -1,3 +1,4 @@
+enableDamagePopup: true
 command:
   permission: "dungeons.admin"
   base-command-name: "dungeons"

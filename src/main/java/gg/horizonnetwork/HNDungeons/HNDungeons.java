@@ -2,6 +2,7 @@ package gg.horizonnetwork.HNDungeons;
 
 import gg.horizonnetwork.HNDungeons.commands.Dungeons;
 import gg.horizonnetwork.HNDungeons.commands.player.dHelp;
+import gg.horizonnetwork.HNDungeons.listener.DamageListener;
 import gg.horizonnetwork.HNDungeons.listener.StorageJoinLeaveListener;
 import gg.horizonnetwork.HNDungeons.managers.InstanceManager;
 import gg.horizonnetwork.HNDungeons.storage.DungeonProfile;
@@ -52,12 +53,13 @@ public final class HNDungeons extends TidePlugin {
 
         TideLogger.console("Loading &fDungeons&b");
         this.loadMessages(this.messageCache, this.getYml("lang"));
+        new DamageListener(this);
 
-        this.loadStorage();
+        //this.loadStorage();
 
         this.InstanceManager = new InstanceManager(this);
-        this.DungeonsCommand.register();
-        this.DungeonsCommand.register((CommandMap) new dHelp(this.DungeonsCommand.getPlugin()));
+        //this.DungeonsCommand.register();
+        //this.DungeonsCommand.register((CommandMap) new dHelp(this.DungeonsCommand.getPlugin()));
 
         TideLogger.console("Successfully loaded &fDungeons&b");
     }
@@ -81,9 +83,10 @@ public final class HNDungeons extends TidePlugin {
         this.loadMessages(this.messageCache, this.getYml("lang"));
 
         this.DungeonsCommand = new Dungeons(this);
+        new DamageListener(this);
 
-        this.DungeonsCommand.register();
-        this.DungeonsCommand.register((CommandMap) new dHelp(this.DungeonsCommand.getPlugin()));
+        //this.DungeonsCommand.register();
+        //this.DungeonsCommand.register((CommandMap) new dHelp(this.DungeonsCommand.getPlugin()));
 
         final double elapsed = System.currentTimeMillis() - start;
 

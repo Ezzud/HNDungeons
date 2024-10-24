@@ -19,7 +19,7 @@ public class InstanceManager {
     private List<DungeonInstance> instances;
 
     public InstanceManager(HNDungeons plugin) {
-        this.instances = new ArrayList<DungeonInstance>();
+        this.instances = new ArrayList<>();
         this.plugin = plugin;
     }
 
@@ -38,7 +38,7 @@ public class InstanceManager {
 
         InstanceProfile profile = new InstanceProfile(instance.getId(), instance);
         profile.load();
-        plugin.getInstanceStorage().save(profile);
+        //plugin.getInstanceStorage().save(profile);
 
         return instance;
     }
@@ -47,7 +47,7 @@ public class InstanceManager {
         instance.teleportPartyOut();
         instance.getWorld().delete();
         removeInstance(instance);
-        plugin.getInstanceStorage().remove(instance.getId());
+        //plugin.getInstanceStorage().remove(instance.getId());
     }
 
     public DungeonInstance get(UUID id) {
