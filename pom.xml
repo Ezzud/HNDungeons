@@ -77,7 +77,7 @@
             <artifactId>TideLib</artifactId>
             <version>1.20.4-R0.1-SNAPSHOT</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/TideLib-Private.jar</systemPath>
+            <systemPath>${project.basedir}/libs/TideLib.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
