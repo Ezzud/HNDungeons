@@ -1,5 +1,7 @@
 package gg.horizonnetwork.HNDungeons;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import gg.horizonnetwork.HNDungeons.commands.Dungeons;
 import gg.horizonnetwork.HNDungeons.commands.player.dHelp;
 import gg.horizonnetwork.HNDungeons.listener.DamageListener;
@@ -41,6 +43,8 @@ public final class HNDungeons extends TidePlugin {
     private CommonStorageImpl<UUID, DungeonProfile> storage;
     private CommonStorageImpl<UUID, InstanceProfile> instanceStorage;
     private InstanceManager InstanceManager;
+    @Getter
+    private ProtocolManager protocolManager;
 
     @Override
     public String pluginName() {
@@ -51,6 +55,7 @@ public final class HNDungeons extends TidePlugin {
     public void onEnable() {
         HNDungeons.instance = this;
 
+        protocolManager = ProtocolLibrary.getProtocolManager();
         TideLogger.console("Loading &fDungeons&b");
         this.loadMessages(this.messageCache, this.getYml("lang"));
         new DamageListener(this);

@@ -4,10 +4,13 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.wrappers.*;
 import gg.horizonnetwork.HNDungeons.HNDungeons;
 import gg.horizonnetwork.HNDungeons.utils.RandomUtil;
 import gg.techtide.tidelib.logger.TideLogger;
 import gg.techtide.tidelib.revamped.abysslibrary.listener.SimpleTideListener;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -21,11 +24,9 @@ import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import static java.util.regex.Pattern.compile;
 
@@ -64,28 +65,29 @@ public class DamageListener extends SimpleTideListener<HNDungeons> {
                     Entity victim = event.getEntity();
                     Location spawnLocation = RandomUtil.getRandomLocationAround(victim, 0.3);
                     String damages = formatDbl(event.getDamage());
-                    ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
 
+                    ProtocolManager protocolManager = plugin.getProtocolManager();
                     PacketContainer packet = protocolManager.createPacket(PacketType.Play.Server.SPAWN_ENTITY);
-
                     // Entity ID
                     int entityID = new Random().nextInt(9999);
                     packet.getIntegers().write(0, entityID);
                     // Entity Type
                     packet.getEntityTypeModifier().write(0, EntityType.ARMOR_STAND);
-                    packet.getIntegers().write(7, 0);
                     packet.getUUIDs().write(0, UUID.randomUUID());
                     // Set location
                     packet.getDoubles().write(1, spawnLocation.getY());
                     packet.getDoubles().write(0, spawnLocation.getX());
                     packet.getDoubles().write(2, spawnLocation.getZ());
 
-                    try {
-                        protocolManager.sendServerPacket((Player)entityEvent.getDamager(), packet);
-                        ((Player)entityEvent.getDamager()).sendMessage("show78");
-                    } catch (InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
+                    /*
+                    WrappedChatComponent newComponent = WrappedChatComponent.fromText("&c" + damages + " ❤");
+                    WrappedDataWatcher dataWatcher = new WrappedDataWatcher();
+                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.getChatComponentSerializer()), Optional.of(newComponent));
+
+                    packet.getWatchableCollectionModifier().write(0, dataWatcher.getWatchableObjects());
+                    */
+                    protocolManager.sendServerPacket((Player)entityEvent.getDamager(), packet);
+                    ((Player)entityEvent.getDamager()).sendMessage("show78");
 
                     /*
                     ArmorStand armorStand = (ArmorStand) victim.getWorld().spawnEntity(spawnLocation, EntityType.ARMOR_STAND);
@@ -102,11 +104,7 @@ public class DamageListener extends SimpleTideListener<HNDungeons> {
                         entityIDs.add(entityID);
                         delpacket.getIntLists().write(0, entityIDs);
 
-                        try {
-                            protocolManager.sendServerPacket((Player) entityEvent.getDamager(), delpacket);
-                        } catch (InvocationTargetException e) {
-                            e.printStackTrace();
-                        }
+                        protocolManager.sendServerPacket((Player) entityEvent.getDamager(), delpacket);
                     }, 20L);
                 }
             }
