@@ -6,8 +6,9 @@ import lombok.Setter;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
 
 public class DungeonWorld {
@@ -31,14 +32,49 @@ public class DungeonWorld {
         this.originalWorldLocation = originalWorld.getSpawnLocation();
     }
 
+    private void copyFileStructure(File source, File target){
+        try {
+            ArrayList<String> ignore = new ArrayList<>(Arrays.asList("uid.dat", "session.lock"));
+            if(!ignore.contains(source.getName())) {
+                if(source.isDirectory()) {
+                    if(!target.exists())
+                        if (!target.mkdirs())
+                            throw new IOException("Couldn't create world directory!");
+                    String[] files = source.list();
+                    assert files != null;
+                    for (String file : files) {
+                        File srcFile = new File(source, file);
+                        File destFile = new File(target, file);
+                        copyFileStructure(srcFile, destFile);
+                    }
+                } else {
+                    InputStream in = new FileInputStream(source);
+                    OutputStream out = new FileOutputStream(target);
+                    byte[] buffer = new byte[1024];
+                    int length;
+                    while ((length = in.read(buffer)) > 0)
+                        out.write(buffer, 0, length);
+                    in.close();
+                    out.close();
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public World copyWorld(World original, String newWorld) {
+        copyFileStructure(original.getWorldFolder(), new File(Bukkit.getWorldContainer(), newWorld));
+        return (new WorldCreator(newWorld).createWorld());
+    }
+
     public void generateWorld() {
         String name = this.originalWorld.getName() +
                 "_" +
                 UUID.randomUUID();
-        WorldCreator wc = new WorldCreator(name);
-        WorldCreator nwc = wc.copy(originalWorld);
 
-        instanciatedWorld = nwc.createWorld();
+        originalWorld.save();
+        instanciatedWorld = copyWorld(originalWorld, name);
         spawnLocation = new Location(
                 instanciatedWorld,
                 this.originalWorldLocation.getX(),

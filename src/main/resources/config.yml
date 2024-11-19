@@ -26,6 +26,17 @@ dungeons:
         type: SKELETON
         name: "AFK Skeleton"
         invincible: true
+        respawn:
+          max-entity: 10
+          respawn-delay: 50
+          1:
+            x:
+            y:
+            z:
+          2:
+            x:
+            y:
+            z:
         health: 100
         ai: false
         location:

@@ -2,10 +2,6 @@ name: HN-Dungeons
 version: '1.2-SNAPSHOT'
 main: gg.horizonnetwork.HNDungeons.HNDungeons
 api-version: '1.20'
-depend:
-  - TideLib
-softdepend:
-  - ProtocolLib
 authors:
   - SpookyDevz
   - Ezzud
