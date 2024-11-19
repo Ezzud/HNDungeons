@@ -2,11 +2,8 @@ package gg.horizonnetwork.HNDungeons.commands.player;
 
 import gg.horizonnetwork.HNDungeons.HNDungeons;
 import gg.horizonnetwork.HNDungeons.api.DungeonInstance;
-import gg.horizonnetwork.HNDungeons.api.DungeonPlayer;
 import gg.horizonnetwork.HNDungeons.managers.InstanceManager;
 import gg.horizonnetwork.HNDungeons.utils.ChatUtil;
-import gg.techtide.tidelib.logger.TideLogger;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;

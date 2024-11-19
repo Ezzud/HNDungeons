@@ -3,11 +3,9 @@ package gg.horizonnetwork.HNDungeons.commands.player;
 import gg.horizonnetwork.HNDungeons.HNDungeons;
 import gg.horizonnetwork.HNDungeons.api.DungeonInstance;
 import gg.horizonnetwork.HNDungeons.api.DungeonPlayer;
-import gg.horizonnetwork.HNDungeons.managers.ConfigManager;
 import gg.horizonnetwork.HNDungeons.managers.InstanceManager;
 import gg.horizonnetwork.HNDungeons.utils.ChatUtil;
 import gg.horizonnetwork.HNDungeons.utils.Logger;
-import gg.techtide.tidelib.logger.TideLogger;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 

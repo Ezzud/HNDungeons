@@ -2,7 +2,6 @@ package gg.horizonnetwork.HNDungeons.listener;
 
 import gg.horizonnetwork.HNDungeons.HNDungeons;
 import gg.horizonnetwork.HNDungeons.utils.RandomUtil;
-import gg.techtide.tidelib.logger.TideLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

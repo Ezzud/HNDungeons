@@ -1,7 +1,5 @@
 package gg.horizonnetwork.HNDungeons.managers;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.events.PacketContainer;
 import gg.horizonnetwork.HNDungeons.HNDungeons;
 import gg.horizonnetwork.HNDungeons.api.DungeonInstance;
 import gg.horizonnetwork.HNDungeons.api.DungeonPlayer;
@@ -9,7 +7,6 @@ import gg.horizonnetwork.HNDungeons.api.DungeonWorld;
 import gg.horizonnetwork.HNDungeons.storage.InstanceStorageManager;
 import gg.horizonnetwork.HNDungeons.types.InstanceState;
 import gg.horizonnetwork.HNDungeons.utils.Logger;
-import gg.techtide.tidelib.logger.TideLogger;
 import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;

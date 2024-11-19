@@ -6,7 +6,6 @@ import gg.horizonnetwork.HNDungeons.api.DungeonMob;
 import gg.horizonnetwork.HNDungeons.api.DungeonPlayer;
 import gg.horizonnetwork.HNDungeons.managers.ConfigManager;
 import gg.horizonnetwork.HNDungeons.utils.Logger;
-import gg.techtide.tidelib.logger.TideLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
