@@ -2,119 +2,70 @@ package gg.horizonnetwork.HNDungeons;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import gg.horizonnetwork.HNDungeons.commands.Dungeons;
-import gg.horizonnetwork.HNDungeons.commands.player.dHelp;
+import gg.horizonnetwork.HNDungeons.commands.CommandHandler;
+import gg.horizonnetwork.HNDungeons.commands.TabCompletion;
 import gg.horizonnetwork.HNDungeons.listener.DamageListener;
-import gg.horizonnetwork.HNDungeons.listener.StorageJoinLeaveListener;
+import gg.horizonnetwork.HNDungeons.managers.ConfigManager;
 import gg.horizonnetwork.HNDungeons.managers.InstanceManager;
-import gg.horizonnetwork.HNDungeons.storage.DungeonProfile;
-import gg.horizonnetwork.HNDungeons.storage.InstanceProfile;
-import gg.horizonnetwork.HNDungeons.storage.json.InstanceJSONStorage;
-import gg.horizonnetwork.HNDungeons.storage.json.PlayerJsonStorage;
-import gg.horizonnetwork.HNDungeons.storage.sql.PlayerSQLStorage;
+import gg.horizonnetwork.HNDungeons.utils.Logger;
 import gg.techtide.tidelib.logger.TideLogger;
-import gg.techtide.tidelib.revamped.abysslibrary.PlaceholderReplacer;
-import gg.techtide.tidelib.revamped.abysslibrary.config.TideConfig;
-import gg.techtide.tidelib.revamped.abysslibrary.plugin.TidePlugin;
-import gg.techtide.tidelib.revamped.abysslibrary.storage.common.CommonStorageImpl;
-import gg.techtide.tidelib.revamped.abysslibrary.storage.type.StorageType;
-import gg.techtide.tidelib.revamped.abysslibrary.text.message.cache.MessageCache;
-import gg.techtide.tidelib.revamped.abysslibrary.utils.Utils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.command.CommandMap;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.UUID;
+import java.util.Objects;
 
 @Getter
-public final class HNDungeons extends TidePlugin {
+public final class HNDungeons extends JavaPlugin {
 
+    @Getter
     public static HNDungeons instance;
+    @Getter
+    public static YamlConfiguration settingsConfig;
+    @Getter
+    public static YamlConfiguration messageCache;
+    @Getter
+    public static YamlConfiguration playerCache;
 
-    private final TideConfig storageConfig = this.getYml("storage");
-    private final StorageType storageType = StorageType.valueOf(this.storageConfig.getString("storage.type"));
-
-    private TideConfig settingsConfig = this.getYml("settings");
-
-    private MessageCache messageCache = new MessageCache(this.getYml("lang"));
-
-    private Dungeons DungeonsCommand = new Dungeons(this);
-    private CommonStorageImpl<UUID, DungeonProfile> storage;
-    private CommonStorageImpl<UUID, InstanceProfile> instanceStorage;
+    @Getter
     private InstanceManager InstanceManager;
     @Getter
     private ProtocolManager protocolManager;
 
     @Override
-    public String pluginName() {
-        return "HNDungeons";
-    }
-
-    @Override
     public void onEnable() {
         HNDungeons.instance = this;
-
         protocolManager = ProtocolLibrary.getProtocolManager();
-        TideLogger.console("Loading &fDungeons&b");
-        this.loadMessages(this.messageCache, this.getYml("lang"));
-        new DamageListener(this);
 
+        this.saveDefaultConfig();
+        ConfigManager.saveData();
+        ConfigManager.saveMessages();
+        ConfigManager.saveInvites();
+        Logger.info("Loading Dungeons...");
+        registerEvents();
+        Objects.requireNonNull(this.getCommand("dungeons")).setExecutor(new CommandHandler());
+        Objects.requireNonNull(this.getCommand("dungeons")).setTabCompleter(new TabCompletion());
         //this.loadStorage();
 
         this.InstanceManager = new InstanceManager(this);
-        //this.DungeonsCommand.register();
-        //this.DungeonsCommand.register((CommandMap) new dHelp(this.DungeonsCommand.getPlugin()));
 
-        TideLogger.console("Successfully loaded &fDungeons&b");
+
+        Logger.success("Successfully loaded &6&lDungeons&r&b");
     }
 
-    @Override
-    public void onDisable() {
-        this.storage.write();
-
-
+    public void registerEvents() {
+        PluginManager pm = Bukkit.getPluginManager();
+        pm.registerEvents(new DamageListener(this), this);
     }
 
     public void onReload() {
         final double start = System.currentTimeMillis();
-
-        this.configs.remove("lang");
-        this.configs.remove("settings");
-
-        this.settingsConfig = this.getYml("settings");
-
-        this.messageCache = new MessageCache(this.getYml("lang"));
-        this.loadMessages(this.messageCache, this.getYml("lang"));
-
-        this.DungeonsCommand = new Dungeons(this);
-        new DamageListener(this);
-
         //this.DungeonsCommand.register();
         //this.DungeonsCommand.register((CommandMap) new dHelp(this.DungeonsCommand.getPlugin()));
 
         final double elapsed = System.currentTimeMillis() - start;
-
-        Bukkit.getOperators().stream().filter(OfflinePlayer::isOnline).forEach(player -> this.messageCache.sendMessage(player.getPlayer(), "messages.reloaded", new PlaceholderReplacer().addPlaceholder("%time%", Utils.format(elapsed))));
-    }
-
-    private void loadStorage() {
-        switch (this.storageType) {
-            case JSON: {
-                this.storage = new CommonStorageImpl<>(new PlayerJsonStorage(this));
-                this.instanceStorage = new CommonStorageImpl<>(new InstanceJSONStorage(this));
-                break;
-            }
-
-            case SQL: {
-                this.storage = new CommonStorageImpl<>(new PlayerSQLStorage(this));
-
-                new StorageJoinLeaveListener(this);
-                break;
-            }
-        }
-
-        TideLogger.console("  - Successfully loaded Storage! &8(&f" + this.storageType + "&7 Storage Method&8)");
     }
 
 }

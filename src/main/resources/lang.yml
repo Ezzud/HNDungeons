@@ -1,23 +1,62 @@
 messages:
-  sending-error:
-    message:
-      enabled: true
-      value:
-        - "&b&lHorizon &8‣ &bError sending player to server."
-  no-permission:
-    message:
-      enabled: true
-      value:
-        - "&b&lHorizon &8‣ &bYou do not have permission to do this."
+  sending-error: "&b&lHorizon &8‣ &bError sending player to server."
+  no-permission: "&b&lHorizon &8‣ &#f96666&fYou do not have permission to do this."
+  no-argument: "&b&lHorizon &8‣ &#f96666&fYou are missing an argument"
   help:
-    message:
-      enabled: true
-      value:
-        - "&b&lHorizon &8‣ &b&lHelp"
-        - "&7"
-        - "&b&l• &3&l/dungeons reload &8- &bReloads plugin!."
-  reloaded:
-    message:
-      enabled: true
-      value:
-        - "&b&lHorizon &8‣ &bThe plugin Dungeons has been reloaded in &3%time%ms&b."
+    header: |
+      &#6697f9&f▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬&r
+      &r
+    user-commands: |
+      &f&l• &#5183e5&f/dungeons join &#8eb1f7&f<dungeon> <level>
+      &f&l• &#5183e5&f/dungeons end
+      &f&l• &#5183e5&f/dungeons tp
+      &f&l• &#5183e5&f/dungeons invite &#8eb1f7&f<player>
+      &f&l• &#5183e5&f/dungeons joinparty&#8eb1f7&f <instance>
+      &f&l• &#5183e5&f/dungeons kick &#8eb1f7&f<player>
+      &f&l• &#5183e5&f/dungeons leave
+      &f&l• &#5183e5&f/dungeons info
+      &r
+    admin-commands: |
+      &f&l• &#5183e5&f/dungeons reload 
+      &f&l• &#5183e5&f/dungeons delete &#8eb1f7&f<instance>
+    footer: |
+      &r
+      &#6697f9&f▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬&r
+  reloaded: "&b&lHorizon &8‣ &bThe plugin Dungeons has been reloaded"
+  instance:
+    not-found: "&b&lHorizon &8‣ &#f96666&fInstance not found"
+    not-an-instance: "&b&lHorizon &8‣ &#f96666&fThis world is not an instance world"
+    teleported: "&b&lHorizon &8‣ &aYou got teleported to your instance"
+    no-instance: "&b&lHorizon &8‣ &cYou are not in an instance of party"
+    ended: "&b&lHorizon &8‣ &aInstance of dungeon &e%dungeonName% &aended successfully"
+    generating: "&b&lHorizon &8‣ &eGenerating an instance of dungeon &b%dungeonName% &e..."
+    done: "&b&lHorizon &8‣ &aInstance of dungeon &b%dungeonName% &asuccessfully generated"
+    error: "&b&lHorizon &8‣ &#f96666&fAn error occurred while generating your instance!"
+    welcome-message: |
+      &#6697f9&f▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬&r
+      &r
+      &#82aafa&fHello &#1e68fa&f%player%&b, welcome to your instance!
+      &r
+      &#5183e5&fDungeon: &#8eb1f7&f%dungeonName%
+      &#5183e5&fLevel: &#8eb1f7&f%level%
+      &r
+      &#0357fd&f[!] &#4077e3&fType &#9240e3&f/dungeon tp &#4077e3&fto teleport back to your instance
+      &#0357fd&f[!] &#4077e3&fType &#9240e3&f/dungeon end &#4077e3&fto close your instance&r
+      &r
+      &#6697f9&f▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬&r
+    info-message: |
+      &#6697f9&f▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬&r
+      &r
+      &#5183e5&fDungeon: &#8eb1f7&f%dungeonName%
+      &#5183e5&fID: &#8eb1f7&f%id%
+      &#5183e5&fLevel: &#8eb1f7&f%level%
+      &#5183e5&fHost: &#8eb1f7&f%host%
+      &r
+      &#6697f9&f▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬&r
+  player:
+    not-found: "&b&lHorizon &8‣ &#f96666&fPlayer not found"
+    not-online: "&b&lHorizon &8‣ &#f96666&fPlayer is not online"
+    not-host: "&b&lHorizon &8‣ &#f96666&fYou are not the host of this instance"
+  command:
+    disabled: "&b&lHorizon &8‣ &#f96666&fThis command is disabled"
+    not-found: "&b&lHorizon &8‣ &#f96666&fCommand not found"

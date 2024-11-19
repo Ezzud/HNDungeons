@@ -1,5 +1,5 @@
 name: HN-Dungeons
-version: '1.1-SNAPSHOT'
+version: '1.2-SNAPSHOT'
 main: gg.horizonnetwork.HNDungeons.HNDungeons
 api-version: '1.20'
 depend:
@@ -9,3 +9,8 @@ softdepend:
 authors:
   - SpookyDevz
   - Ezzud
+commands:
+  dungeons:
+    description: Main command
+    aliases: ["hndungeons", "dungeon"]
+    default: true

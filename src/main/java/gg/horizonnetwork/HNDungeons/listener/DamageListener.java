@@ -1,43 +1,34 @@
 package gg.horizonnetwork.HNDungeons.listener;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.wrappers.*;
 import gg.horizonnetwork.HNDungeons.HNDungeons;
 import gg.horizonnetwork.HNDungeons.utils.RandomUtil;
 import gg.techtide.tidelib.logger.TideLogger;
-import gg.techtide.tidelib.revamped.abysslibrary.listener.SimpleTideListener;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.metadata.MetadataValue;
 
-import java.lang.reflect.InvocationTargetException;
-import java.text.DecimalFormat;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import static java.util.regex.Pattern.compile;
 
 
-public class DamageListener extends SimpleTideListener<HNDungeons> {
+public class DamageListener implements Listener {
 
     private static final Pattern REGEX = compile("(\\d+(?:\\.\\d+)?)([KMG]?)");
     private static final String[] KMG = new String[] {"", "K", "M", "G", "T", "T", "T", "T", "T", "T", "Q"};
+    private final HNDungeons plugin;
 
     public DamageListener(final HNDungeons plugin) {
-        super(plugin);
+        this.plugin = plugin;
     }
 
     public static double round(double value, int places) {
@@ -58,57 +49,32 @@ public class DamageListener extends SimpleTideListener<HNDungeons> {
 
     @EventHandler
     public void onDamage(final EntityDamageEvent event) {
-        boolean a = plugin.getSettingsConfig().getBoolean("enableDamagePopup");
+        boolean a = plugin.getConfig().getBoolean("enableDamagePopup");
         if(a) {
             if (event instanceof EntityDamageByEntityEvent entityEvent) {
                 if(entityEvent.getDamager() instanceof Player) {
                     Entity victim = event.getEntity();
-                    Location spawnLocation = RandomUtil.getRandomLocationAround(victim, 0.3);
+                    Location spawnLocation = RandomUtil.getRandomLocationAround(victim, 0.8);
+                    spawnLocation.setY(spawnLocation.getY() + 2.4);
                     String damages = formatDbl(event.getDamage());
 
-                    ProtocolManager protocolManager = plugin.getProtocolManager();
-                    PacketContainer packet = protocolManager.createPacket(PacketType.Play.Server.SPAWN_ENTITY);
-                    // Entity ID
-                    int entityID = new Random().nextInt(9999);
-                    packet.getIntegers().write(0, entityID);
-                    // Entity Type
-                    packet.getEntityTypeModifier().write(0, EntityType.ARMOR_STAND);
-                    packet.getUUIDs().write(0, UUID.randomUUID());
-                    // Set location
-                    packet.getDoubles().write(1, spawnLocation.getY());
-                    packet.getDoubles().write(0, spawnLocation.getX());
-                    packet.getDoubles().write(2, spawnLocation.getZ());
-
-                    /*
-                    WrappedChatComponent newComponent = WrappedChatComponent.fromText("&c" + damages + " ❤");
-                    WrappedDataWatcher dataWatcher = new WrappedDataWatcher();
-                    dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.getChatComponentSerializer()), Optional.of(newComponent));
-
-                    packet.getWatchableCollectionModifier().write(0, dataWatcher.getWatchableObjects());
-                    */
-                    protocolManager.sendServerPacket((Player)entityEvent.getDamager(), packet);
-                    ((Player)entityEvent.getDamager()).sendMessage("show78");
-
-                    /*
                     ArmorStand armorStand = (ArmorStand) victim.getWorld().spawnEntity(spawnLocation, EntityType.ARMOR_STAND);
-                    armorStand.setGravity(false);
                     armorStand.setInvisible(true);
+                    armorStand.setGravity(false);
                     armorStand.setCustomName(ChatColor.RED + damages + " ❤");
                     armorStand.setCustomNameVisible(true);
                     armorStand.setInvulnerable(true);
-                    */
-                    TideLogger.console("Vector " + victim.getVelocity().getX() + " " + victim.getVelocity().getY() + " " + victim.getVelocity().getZ());
-                    Bukkit.getServer().getScheduler().runTaskLater(plugin, () -> {
-                        PacketContainer delpacket = protocolManager.createPacket(PacketType.Play.Server.ENTITY_DESTROY);
-                        List<Integer> entityIDs = new ArrayList<>();
-                        entityIDs.add(entityID);
-                        delpacket.getIntLists().write(0, entityIDs);
+                    armorStand.setMarker(true);
 
-                        protocolManager.sendServerPacket((Player) entityEvent.getDamager(), delpacket);
-                    }, 20L);
+                    Bukkit.getServer().getScheduler().runTaskLater(plugin, armorStand::remove, 20L);
                 }
             }
         }
 
+        List<MetadataValue> values = event.getEntity().getMetadata("isFromInstance");
+        if (!values.isEmpty() && values.get(0).value().equals("1")) {
+            LivingEntity en = (LivingEntity) event.getEntity();
+            en.setHealth(Objects.requireNonNull(en.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue());
+        }
     }
 }

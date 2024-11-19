@@ -1,14 +1,12 @@
 enableDamagePopup: true
+levelMultiplier: 2.5
 command:
   permission: "dungeons.admin"
-  base-command-name: "dungeons"
-  aliases:
-    - "dungeon"
-  sub-commands:
-    "reload":
-      base-alias: "reload"
-      aliases:
-        - "reloadconfig"
+disabled_commands:
+  - invite
+  - kick
+  - leave
+  - joinparty
 dungeons:
   world:
     mobs:
@@ -16,6 +14,7 @@ dungeons:
         type: ZOMBIE
         name: "AFK Zombie"
         invincible: true
+        health: 100
         ai: false
         location:
           x: 0
@@ -27,6 +26,7 @@ dungeons:
         type: SKELETON
         name: "AFK Skeleton"
         invincible: true
+        health: 100
         ai: false
         location:
           x: 10

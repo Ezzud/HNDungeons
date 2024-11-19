@@ -1,14 +1,17 @@
 package gg.horizonnetwork.HNDungeons.api;
 
+import gg.horizonnetwork.HNDungeons.utils.Logger;
 import gg.techtide.tidelib.TideLibSpigot;
+import gg.techtide.tidelib.logger.TideLogger;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
+import org.apache.commons.io.FileUtils;
+import org.bukkit.*;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.UUID;
 
 public class DungeonWorld {
@@ -40,13 +43,37 @@ public class DungeonWorld {
         WorldCreator nwc = wc.copy(originalWorld);
 
         instanciatedWorld = nwc.createWorld();
-        spawnLocation = originalWorldLocation;
-        spawnLocation.setWorld(instanciatedWorld);
+        spawnLocation = new Location(
+                instanciatedWorld,
+                this.originalWorldLocation.getX(),
+                this.originalWorldLocation.getY(),
+                this.originalWorldLocation.getZ(),
+                this.originalWorldLocation.getYaw(),
+                this.originalWorldLocation.getPitch()
+        );
+        instanciatedWorld.setSpawnLocation(spawnLocation);
+        instanciatedWorld.setGameRule(GameRule.SPAWN_RADIUS, 0);
     }
 
     public void delete() {
         File folder = instanciatedWorld.getWorldFolder();
-        Bukkit.unloadWorld(this.instanciatedWorld, false);
-        folder.delete();
+        boolean unloaded = Bukkit.unloadWorld(this.instanciatedWorld, false);
+        boolean success = true;
+        if(unloaded) {
+            try {
+                FileUtils.deleteDirectory(folder);
+            } catch(IOException ioe) {
+                success = false;
+                ioe.printStackTrace();
+                Logger.error("Failed to delete world " + this.instanciatedWorld.getName() + ": " + ioe.getMessage());
+            }
+            if(success)
+                Logger.success("&aWorld " + this.instanciatedWorld.getName() + " deleted");
+        } else {
+            Logger.warn("Skipped deletion of world " + this.instanciatedWorld.getName() + " because he is not unloaded");
+        }
+
+
     }
+
 }
