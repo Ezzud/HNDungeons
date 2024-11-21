@@ -29,7 +29,12 @@ public class DungeonWorld {
 
     public DungeonWorld(String originalWorldName) {
         this.originalWorld = Bukkit.getWorld(originalWorldName);
+        if(this.originalWorld == null){
+            this.originalWorld = new WorldCreator(originalWorldName).createWorld();
+            Logger.error("Unable to find world with name " + originalWorldName + " regenerating one...");
+        }
         this.originalWorldLocation = originalWorld.getSpawnLocation();
+
     }
 
     private void copyFileStructure(File source, File target){

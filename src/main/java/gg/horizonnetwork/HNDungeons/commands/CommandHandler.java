@@ -22,6 +22,7 @@ public class CommandHandler implements CommandExecutor {
             return false;
         if(args.length == 0) {
             new dHelp(player, args);
+            return false;
         }
 
         List<String> disabledCommands = plugin.getConfig().getStringList("disabled_commands");

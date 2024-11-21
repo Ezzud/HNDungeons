@@ -53,6 +53,10 @@ public class DungeonInstance {
         this.plugin = plugin;
     }
 
+    public ConfigurationSection getInstanceConfig() {
+        return (plugin.getConfig().getConfigurationSection("dungeons." + this.world.getOriginalWorld().getName()));
+    }
+
     public void teleportPartyIn() {
         for(DungeonPlayer p : party.getPlayers()) {
             if(p.getPlayer() != null)
@@ -94,8 +98,11 @@ public class DungeonInstance {
         this.manager.delete(this);
     }
 
+    public void removeEntity(DungeonMob m) {
+        this.entities.remove(m);
+    }
+
     public void summonEntities() {
-        List<DungeonMob> entities = new ArrayList<>();
         ConfigurationSection mobsToSpawn = plugin.getConfig().getConfigurationSection("dungeons." + this.world.getOriginalWorld().getName() + ".mobs");
         double levelMultiplier = plugin.getConfig().getDouble("levelMultiplier");
         if(mobsToSpawn != null) {
@@ -117,7 +124,7 @@ public class DungeonInstance {
                                 location.getLong("yaw"),
                                 location.getLong("pitch"));
 
-                        DungeonMob entity = new DungeonMob(EntityType.valueOf(type), name, this);
+                        DungeonMob entity = new DungeonMob(EntityType.valueOf(type), name, this, mob);
                         this.entities.add(entity);
                         entity.spawn(spawnLob);
                         Logger.info("Spawning entity &b" + ChatUtil.formatDungeonMobsName(entity, entity.getName()) + " &ein world " + spawnLob.getWorld().getName());
@@ -125,7 +132,7 @@ public class DungeonInstance {
                         if(invincible) {
                             entity.makeInvincible();
                         }
-                        if(health > 0) entity.setMaxHealth(health + (levelMultiplier * level));
+                        if(health > 0) entity.setMaxHealth((health * (level > 1 ? levelMultiplier * (level - 1) : 1)) * entity.getHealthMultiplier());
                     }
                 }
 

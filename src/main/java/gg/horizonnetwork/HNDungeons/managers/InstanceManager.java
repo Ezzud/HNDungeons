@@ -121,6 +121,7 @@ public class InstanceManager {
         for (ConfigurationSection section : data) {
             DungeonInstance instance = new DungeonInstance(this, 4, plugin);
             instance.setId(UUID.fromString(section.getName()));
+            instance.setLevel(section.getInt("level"));
             DungeonWorld world = new DungeonWorld(section.getString("world.original"));
             String worldName = section.getString("world.instance");
             assert worldName != null;

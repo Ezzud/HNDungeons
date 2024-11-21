@@ -1,5 +1,7 @@
 package gg.horizonnetwork.HNDungeons;
 
+import gg.horizonnetwork.HNDungeons.api.DungeonInstance;
+import gg.horizonnetwork.HNDungeons.api.DungeonMob;
 import gg.horizonnetwork.HNDungeons.commands.CommandHandler;
 import gg.horizonnetwork.HNDungeons.commands.TabCompletion;
 import gg.horizonnetwork.HNDungeons.listener.DamageListener;
@@ -12,6 +14,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -41,25 +46,30 @@ public final class HNDungeons extends JavaPlugin {
         registerEvents();
         Objects.requireNonNull(this.getCommand("dungeons")).setExecutor(new CommandHandler());
         Objects.requireNonNull(this.getCommand("dungeons")).setTabCompleter(new TabCompletion());
-        //this.loadStorage();
-
         this.InstanceManager = new InstanceManager(this);
 
+        Logger.success("&aSuccessfully loaded &6&lDungeons&r&b");
+    }
 
-        Logger.success("Successfully loaded &6&lDungeons&r&b");
+    @Override
+    public void onDisable() {
+        Logger.info("&eUnloading all instance entities...");
+        int entityCount = 0;
+        for(DungeonInstance i : this.getInstanceManager().getInstances()) {
+            List<DungeonMob> mobs = new ArrayList<>(i.getEntities());
+            Logger.info("&eUnloading &6"+mobs.size()+" entities &efrom instance " + i.getId().toString());
+            for (DungeonMob mob : mobs) {
+                Logger.info("&eUnloading " + mob.getName() + " &efrom instance " + i.getId().toString());
+                mob.despawn();
+                entityCount += 1;
+            }
+        }
+        Logger.success("&aSuccessfully unloaded &e" + entityCount + " &aentities!");
+        Logger.success("&aSuccessfully unloaded &6&lDungeons&r&b");
     }
 
     public void registerEvents() {
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new DamageListener(this), this);
     }
-
-    public void onReload() {
-        final double start = System.currentTimeMillis();
-        //this.DungeonsCommand.register();
-        //this.DungeonsCommand.register((CommandMap) new dHelp(this.DungeonsCommand.getPlugin()));
-
-        final double elapsed = System.currentTimeMillis() - start;
-    }
-
 }
