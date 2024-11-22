@@ -1,6 +1,9 @@
 package gg.horizonnetwork.HNDungeons.utils;
 
 
+import gg.horizonnetwork.HNDungeons.api.DungeonMob;
+import org.bukkit.entity.Player;
+
 import java.util.regex.Pattern;
 
 import static java.util.regex.Pattern.compile;
@@ -23,5 +26,29 @@ public class FormatUtil {
         value = value * factor;
         long tmp = Math.round(value);
         return (double) tmp / factor;
+    }
+
+    public static String formatCommand(DungeonMob dungeonMob, Player player, String command) {
+        double totalFactor = dungeonMob.getRewardMultiplier() == 1.0 && dungeonMob.getInstance().getLevelMultiplier() == 1.0 ? 1.0 : dungeonMob.getRewardMultiplier() + dungeonMob.getInstance().getLevelMultiplier();
+        String newCommand = command
+                .replaceAll("%player%", player.getName())
+                .replaceAll("%mobName%", dungeonMob.getName())
+                .replaceAll("%boostFactor%", String.valueOf(dungeonMob.getRewardMultiplier()))
+                .replaceAll("%levelFactor%", String.valueOf(dungeonMob.getInstance().getLevelMultiplier()))
+                .replaceAll("%totalFactor%", String.valueOf(totalFactor));
+        for(String word : newCommand.split(" ")) {
+            // Usage %rdm_10-10000%
+            Logger.info(word);
+            if(word.startsWith("%rdm_") && word.endsWith("%")) {
+                String stripped = word.strip();
+                stripped = stripped.replaceFirst("rdm_", "").replaceAll("%", "");
+                int minValue = Integer.parseInt(stripped.split("-")[0]);
+                int maxValue = Integer.parseInt(stripped.split("-")[1]);
+                int randomValue = RandomUtil.getRandomNumberInRange(minValue, maxValue);
+                double boostedValue = randomValue * totalFactor;
+                newCommand = newCommand.replace(word, String.valueOf(boostedValue));
+            }
+        }
+        return newCommand;
     }
 }

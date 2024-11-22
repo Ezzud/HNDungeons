@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 public class RandomUtil {
     public static int getRandomNumberInRange(int min, int max) {
         if (min >= max)
-            throw new IllegalArgumentException("max must be greater than min");
+            return max;
         Random r = new Random();
         return r.nextInt((max - min) + 1) + min;
     }
@@ -46,6 +46,12 @@ public class RandomUtil {
         double pZ = playerLoc.getZ();
 
         return(new Location(player.getWorld(), pX+getRandomDouble(-radius, radius), pY, pZ+getRandomDouble(-radius, radius)));
+    }
+
+    public static Location getRandomAreaLocation(Location min, Location max)
+    {
+        Location range = new Location(min.getWorld(), Math.abs(max.getX() - min.getX()), min.getY(), Math.abs(max.getZ() - min.getZ()), min.getYaw(), min.getPitch());
+        return new Location(min.getWorld(), (Math.random() * range.getX()) + (Math.min(min.getX(), max.getX())), range.getY(), (Math.random() * range.getZ()) + (Math.min(min.getZ(), max.getZ())), min.getYaw(), min.getPitch());
     }
 
 }

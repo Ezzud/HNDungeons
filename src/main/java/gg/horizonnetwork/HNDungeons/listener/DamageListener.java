@@ -77,25 +77,39 @@ public class DamageListener implements Listener {
                 if(!event.isCancelled()) {
                     event.setCancelled(true);
                 }
-                DungeonInstance i = HNDungeons.getInstance().getInstanceManager().getWorldInstance(entity.getWorld());
-                if(i != null) {
-                    List<DungeonMob> mobsList = new ArrayList<>(i.getEntities());
-                    for(DungeonMob mob : mobsList) {
-                        if(mob.getEntity() == null)
-                            continue;
-                        if(mob.getEntity().getUniqueId().equals(entity.getUniqueId())) {
-                            if(mob.getHealth() - damage <= 0) {
-                                // Entity death
-                                if(!isInvincible(entity))
-                                    mob.despawn();
-                                else
-                                    mob.setHealth(mob.getMaxHealth());
-                            } else {
-                                if (isInvincible(entity)) {
-                                    mob.setHealth(mob.getMaxHealth());
-                                } else {
-                                    mob.setHealth(mob.getHealth() - damage);
-                                    mob.updateName();
+                if(event instanceof EntityDamageByEntityEvent) {
+                    if(((EntityDamageByEntityEvent) event).getDamager() instanceof Player) {
+                        DungeonInstance i = HNDungeons.getInstance().getInstanceManager().getWorldInstance(entity.getWorld());
+                        if(i != null) {
+                            List<DungeonMob> mobsList = new ArrayList<>(i.getEntities());
+                            for(DungeonMob mob : mobsList) {
+                                if(mob.getEntity() == null)
+                                    continue;
+                                if(mob.getEntity().getUniqueId().equals(entity.getUniqueId())) {
+                                    if(mob.getHealth() - damage <= 0) {
+                                        // Entity death
+                                        if(!isInvincible(entity)) {
+                                            mob.giveDeathRewards((Player)((EntityDamageByEntityEvent) event).getDamager());
+                                            if(mob.isRespawnable()) {
+                                                int cooldown = 20 * mob.getConfig().getInt("respawn-data.cooldown-seconds");
+                                                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                                                    Logger.info("Spawning a new respawnable mob of " + mob.getName());
+                                                    i.summonRespawnableEntity(mob, mob.getConfig());
+                                                }, cooldown);
+                                            }
+                                            mob.despawn();
+                                        }
+                                        else
+                                            mob.setHealth(mob.getMaxHealth());
+                                    } else {
+                                        if (isInvincible(entity)) {
+                                            mob.setHealth(mob.getMaxHealth());
+                                        } else {
+                                            mob.setHealth(mob.getHealth() - damage);
+                                            mob.updateName();
+                                        }
+                                        mob.giveHitRewards((Player)((EntityDamageByEntityEvent) event).getDamager());
+                                    }
                                 }
                             }
                         }

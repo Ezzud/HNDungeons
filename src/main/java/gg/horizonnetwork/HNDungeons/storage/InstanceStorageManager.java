@@ -46,7 +46,7 @@ public class InstanceStorageManager {
         this.config.set(instance.getId() + ".world.original",
                 instance.getWorld().getOriginalWorld().getName());
         this.config.set(instance.getId() + ".level",
-                String.valueOf(instance.getLevel()));
+                instance.getLevel());
         this.config.set(instance.getId() + ".state",
                 instance.getState().toString());
         List<String> memberList = new ArrayList<>();

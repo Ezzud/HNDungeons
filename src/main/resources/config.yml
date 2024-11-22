@@ -34,6 +34,19 @@ dungeons:
         type: SKELETON
         name: "AFK Skeleton"
         invincible: true
+        respawn: true
+        respawn-data:
+          area:
+            pos1:
+              x: 0
+              y: 130
+              z: 0
+            pos2:
+              x: 10
+              y: 130
+              z: 10
+          cooldown-seconds: 30
+          entities-count: 10
         rarities:
           legendary:
             color: "&6"

@@ -7,6 +7,7 @@ import gg.horizonnetwork.HNDungeons.utils.Logger;
 import gg.horizonnetwork.HNDungeons.utils.RandomUtil;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -16,6 +17,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffect;
@@ -29,6 +31,7 @@ import java.util.stream.Collectors;
 
 public class DungeonMob {
 
+    @Getter
     private final EntityType entityType;
     @Getter
     private final String name;
@@ -66,6 +69,8 @@ public class DungeonMob {
     private double health;
     @Getter
     private double maxHealth;
+    @Getter
+    private boolean respawnable = false;
 
     public DungeonMob(EntityType entityType, String name, DungeonInstance instance, ConfigurationSection section) {
         this.entityType = entityType;
@@ -86,6 +91,59 @@ public class DungeonMob {
         this.brightEntity();
 
         this.location = loc;
+    }
+
+    public void giveHitRewards(Player player) {
+        List<String> rewards = this.getHitRewardCommands();
+        for(String reward : rewards){
+            String formattedCommand = FormatUtil.formatCommand(this, player, reward);
+            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), formattedCommand);
+        }
+    }
+
+    public void giveDeathRewards(Player player) {
+        List<String> rewards = this.getDeathRewardCommands();
+        for(String reward : rewards){
+            String formattedCommand = FormatUtil.formatCommand(this, player, reward);
+            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), formattedCommand);
+        }
+    }
+
+    public List<String> getHitRewardCommands() {
+        ConfigurationSection rewards = this.config.getConfigurationSection("rewards");
+        if(rewards == null) {
+            Logger.error("&cNo rewards found for mob " + this.name);
+            return Collections.emptyList();
+        }
+        return rewards.getStringList("hit.commands");
+    }
+
+    public List<String> getDeathRewardCommands() {
+        ConfigurationSection rewards = this.config.getConfigurationSection("rewards");
+        if(rewards == null) {
+            Logger.error("&cNo rewards found for mob " + this.name);
+            return Collections.emptyList();
+        }
+        return rewards.getStringList("death.commands");
+    }
+
+    public void setRarity(String rarityKey) {
+        ConfigurationSection rarities = config.getConfigurationSection("rarities");
+        if(rarities == null) {
+            Logger.error("Unable to find rarities of mob " + name + " using default values...");
+            return;
+        }
+        Set<String> rareKeys = rarities.getKeys(false);
+        for(String key : rareKeys) {
+            if(key.equals(rarityKey)) {
+                this.healthMultiplier = rarities.getDouble(key + ".health-multiplier");
+                this.rewardMultiplier = rarities.getDouble(key + ".reward-multiplier");
+                this.brightColor = rarities.getString(key + ".color");
+                this.prefix = rarities.getString(key + ".prefix");
+                this.rarity = key;
+                Logger.info("&bMob " + name + " &bspawned as rarity " + this.prefix + " &bin instance " + this.instance.getId().toString());
+            }
+        }
     }
 
     public void selectRarity() {
@@ -109,6 +167,12 @@ public class DungeonMob {
                 break;
             }
         }
+    }
+
+    public void markRespawnable() {
+        if(this.entity == null) return;
+        this.entity.setMetadata("isRespawnable", new FixedMetadataValue(HNDungeons.getInstance(), "1"));
+        this.respawnable = true;
     }
 
     public void updateName() {

@@ -6,6 +6,7 @@ import gg.horizonnetwork.HNDungeons.managers.InstanceMemberManager;
 import gg.horizonnetwork.HNDungeons.types.InstanceState;
 import gg.horizonnetwork.HNDungeons.utils.ChatUtil;
 import gg.horizonnetwork.HNDungeons.utils.Logger;
+import gg.horizonnetwork.HNDungeons.utils.RandomUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -44,6 +45,7 @@ public class DungeonInstance {
     public DungeonPlayer host;
     @Getter
     private List<DungeonMob> entities = new ArrayList<DungeonMob>();
+    private double levelMultiplier;
 
     public DungeonInstance(InstanceManager instanceManager, int maxPlayers, HNDungeons plugin) {
         this.manager = instanceManager;
@@ -55,6 +57,10 @@ public class DungeonInstance {
 
     public ConfigurationSection getInstanceConfig() {
         return (plugin.getConfig().getConfigurationSection("dungeons." + this.world.getOriginalWorld().getName()));
+    }
+
+    public double getLevelMultiplier() {
+        return this.level > 1 ? this.level * this.levelMultiplier : 1.0;
     }
 
     public void teleportPartyIn() {
@@ -102,9 +108,47 @@ public class DungeonInstance {
         this.entities.remove(m);
     }
 
+    public void summonRespawnableEntity(DungeonMob mob, ConfigurationSection mobData) {
+        DungeonMob newMob = new DungeonMob(mob.getEntityType(), mob.getName(), this, mobData);
+        double health = mobData.getDouble("health");
+        boolean invincible = mobData.getBoolean("invincible");
+        boolean ai = mobData.getBoolean("ai");
+        double levelMultiplier = plugin.getConfig().getDouble("levelMultiplier");
+        ConfigurationSection location = mobData.getConfigurationSection("respawn-data.area.pos1");
+        ConfigurationSection location2 = mobData.getConfigurationSection("respawn-data.area.pos2");
+        if(location != null && location2 != null) {
+            Location pos1 = new Location(this.getWorld().getInstanciatedWorld(),
+                    location.getDouble("x"),
+                    location.getDouble("y"),
+                    location.getDouble("z"),
+                    RandomUtil.getRandomNumberInRange(-180, 180),
+                    0);
+            Location pos2 = new Location(this.getWorld().getInstanciatedWorld(),
+                    location2.getDouble("x"),
+                    location2.getDouble("y"),
+                    location2.getDouble("z"),
+                    RandomUtil.getRandomNumberInRange(-180, 180),
+                    0);
+            Location spawnLocation = RandomUtil.getRandomAreaLocation(pos1, pos2);
+            this.entities.add(newMob);
+            newMob.spawn(spawnLocation);
+            Logger.info("Spawning respawnable entity &b" + ChatUtil.formatDungeonMobsName(newMob, newMob.getName()) + " &ein world " + spawnLocation.getWorld().getName());
+            if(!ai) newMob.disableAI();
+            if(invincible) {
+                newMob.makeInvincible();
+            }
+            newMob.markRespawnable();
+            if(health > 0)newMob.setMaxHealth((health * (level > 1 ? levelMultiplier * (level - 1) : 1)) * newMob.getHealthMultiplier());
+
+        } else {
+            Logger.error("&cMissing one or more location value for random respawnable for " + mob.getName());
+        }
+    }
+
     public void summonEntities() {
         ConfigurationSection mobsToSpawn = plugin.getConfig().getConfigurationSection("dungeons." + this.world.getOriginalWorld().getName() + ".mobs");
         double levelMultiplier = plugin.getConfig().getDouble("levelMultiplier");
+        this.levelMultiplier = levelMultiplier;
         if(mobsToSpawn != null) {
             Set<String> allMobs = mobsToSpawn.getKeys(true);
             for (String mobKey : allMobs) {
@@ -115,6 +159,7 @@ public class DungeonInstance {
                     double health = mob.getDouble("health");
                     boolean invincible = mob.getBoolean("invincible");
                     boolean ai = mob.getBoolean("ai");
+                    boolean respawnable = mob.getBoolean("respawn");
                     ConfigurationSection location = mob.getConfigurationSection("location");
                     if(location != null) {
                         Location spawnLob = new Location(this.getWorld().getInstanciatedWorld(),
@@ -125,14 +170,26 @@ public class DungeonInstance {
                                 location.getLong("pitch"));
 
                         DungeonMob entity = new DungeonMob(EntityType.valueOf(type), name, this, mob);
-                        this.entities.add(entity);
-                        entity.spawn(spawnLob);
-                        Logger.info("Spawning entity &b" + ChatUtil.formatDungeonMobsName(entity, entity.getName()) + " &ein world " + spawnLob.getWorld().getName());
-                        if(!ai) entity.disableAI();
-                        if(invincible) {
-                            entity.makeInvincible();
+                        if(respawnable) {
+                            int count = mob.getInt("respawn-data.entities-count");
+                            if(count > 0) {
+                                for (int i = 0; i < count; i++) {
+                                    summonRespawnableEntity(entity, mob);
+                                }
+                            } else {
+                                Logger.error("Invalid count on respawnable entity " + entity.getName());
+                            }
+                        } else {
+                            this.entities.add(entity);
+                            entity.spawn(spawnLob);
+                            Logger.info("Spawning entity &b" + ChatUtil.formatDungeonMobsName(entity, entity.getName()) + " &ein world " + spawnLob.getWorld().getName());
+                            if(!ai) entity.disableAI();
+                            if(invincible) {
+                                entity.makeInvincible();
+                            }
+                            if(health > 0) entity.setMaxHealth((health * (level > 1 ? levelMultiplier * (level - 1) : 1)) * entity.getHealthMultiplier());
+
                         }
-                        if(health > 0) entity.setMaxHealth((health * (level > 1 ? levelMultiplier * (level - 1) : 1)) * entity.getHealthMultiplier());
                     }
                 }
 
