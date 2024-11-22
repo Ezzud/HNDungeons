@@ -26,7 +26,7 @@ dungeons:
         rewards:
           hit:
             commands:
-              - "eco give %player% 10"
+              - "eco give %player% %rdm_1-10%"
           death:
             commands:
               - "eco give %player% 1000"
@@ -91,7 +91,7 @@ dungeons:
         rewards:
           hit:
             commands:
-              - "eco give %player% 10"
+              - "eco give %player% %rdm_1-10%"
           death:
             commands:
-              - "eco give %player% 1000"
+              - "eco give %player% %rdm_1000-1000%"
