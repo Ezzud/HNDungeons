@@ -53,6 +53,7 @@ public class InstanceManager {
 
     public void delete(DungeonInstance instance) {
         Logger.warn("Instance " + instance.getWorld().getInstanciatedWorld().getName() + " will be deleted in 8 seconds...");
+        instance.setState(InstanceState.STOPPED);
         Bukkit.getServer().getScheduler().runTaskLater(plugin, () -> {
             Logger.info("Deleting instance " + instance.getWorld().getInstanciatedWorld().getName());
             instance.getWorld().delete();

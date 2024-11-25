@@ -38,7 +38,6 @@ public class FormatUtil {
                 .replaceAll("%totalFactor%", String.valueOf(totalFactor));
         for(String word : newCommand.split(" ")) {
             // Usage %rdm_10-10000%
-            Logger.info(word);
             if(word.startsWith("%rdm_") && word.endsWith("%")) {
                 String stripped = word.strip();
                 stripped = stripped.replaceFirst("rdm_", "").replaceAll("%", "");

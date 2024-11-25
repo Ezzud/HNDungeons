@@ -24,7 +24,7 @@ public class dInfo {
         DungeonPlayer p = new DungeonPlayer(player);
 
         if(m.getWorldInstance(player.getWorld()) != null) {
-            DungeonInstance i = m.getPlayerInstance(p);
+            DungeonInstance i = m.getWorldInstance(player.getWorld());
             StringBuilder party = new StringBuilder();
             for(DungeonPlayer member : i.getParty().getPlayers()) {
                 party.append("&6- &c").append(member.getOfflinePlayer().getName()).append("\n");

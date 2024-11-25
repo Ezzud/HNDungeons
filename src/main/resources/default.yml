@@ -1,0 +1,86 @@
+world:
+  mobs:
+    mob-1:
+      type: ZOMBIE
+      name: "AFK Zombie"
+      invincible: true
+      health: 100
+      ai: false
+      location:
+        x: 0
+        y: 0
+        z: 0
+        yaw: 0
+        pitch: 0
+      rewards:
+        hit:
+          commands:
+            - "eco give %player% %rdm_1-10%"
+        death:
+          commands:
+            - "eco give %player% 1000"
+    mob-2:
+      type: SKELETON
+      name: "AFK Skeleton"
+      invincible: true
+      respawn: true
+      respawn-data:
+        area:
+          pos1:
+            x: 0
+            y: 130
+            z: 0
+          pos2:
+            x: 10
+            y: 130
+            z: 10
+        cooldown-seconds: 30
+        entities-count: 10
+      rarities:
+        legendary:
+          color: "&6"
+          prefix: "&6&l[LEGENDARY] "
+          chances: 1
+          reward-multiplier: 10
+          health-multiplier: 10
+        epic:
+          color: "&5"
+          prefix: "&5&l[EPIC] "
+          chances: 5
+          reward-multiplier: 5
+          health-multiplier: 5
+        rare:
+          color: "&b"
+          prefix: "&b&l[RARE] "
+          chances: 15
+          reward-multiplier: 2.5
+          health-multiplier: 2.5
+        uncommon:
+          color: "&a"
+          prefix: "&a&l[UNCOMMON] "
+          chances: 30
+          reward-multiplier: 1.5
+          health-multiplier: 1.5
+        ultimate:
+          color: "&0"
+          prefix: "&0&l[ULTIMATE] "
+          requirements:
+            hits: 0
+            kills: 10
+          reward-multiplier: 10
+          health-multiplier: 10
+      health: 100
+      ai: false
+      location:
+        x: 10
+        y: 0
+        z: -10
+        yaw: 90
+        pitch: 0
+      rewards:
+        hit:
+          commands:
+            - "eco give %player% %rdm_1-10%"
+        death:
+          commands:
+            - "eco give %player% %rdm_1000-1000%"

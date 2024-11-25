@@ -1,5 +1,6 @@
 package gg.horizonnetwork.HNDungeons;
 
+import gg.horizonnetwork.HNDungeons.api.DungeonExpansion;
 import gg.horizonnetwork.HNDungeons.api.DungeonInstance;
 import gg.horizonnetwork.HNDungeons.api.DungeonMob;
 import gg.horizonnetwork.HNDungeons.commands.CommandHandler;
@@ -37,11 +38,17 @@ public final class HNDungeons extends JavaPlugin {
     @Override
     public void onEnable() {
         HNDungeons.instance = this;
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) { //
+            Logger.info("&aEnabling PAPI Hook");
+            new DungeonExpansion(this).register(); //
+
+        }
 
         this.saveDefaultConfig();
         ConfigManager.saveData();
         ConfigManager.saveMessages();
         ConfigManager.saveInvites();
+        ConfigManager.saveAllDungeons();
         Logger.info("Loading Dungeons...");
         registerEvents();
         Objects.requireNonNull(this.getCommand("dungeons")).setExecutor(new CommandHandler());

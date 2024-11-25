@@ -10,3 +10,5 @@ commands:
     description: Main command
     aliases: ["hndungeons", "dungeon"]
     default: true
+softdepend:
+  - PlaceholderAPI

@@ -51,7 +51,7 @@ public class DamageListener implements Listener {
                 if(entityEvent.getDamager() instanceof Player) {
                     Entity victim = event.getEntity();
                     Location spawnLocation = RandomUtil.getRandomLocationAround(victim, 0.8);
-                    spawnLocation.setY(spawnLocation.getY() + 2.4);
+                    spawnLocation.setY(spawnLocation.getY() + victim.getHeight() + 0.5);
                     Location preTeleportLocation = new Location(victim.getWorld(), spawnLocation.getX(), 0, spawnLocation.getZ());
                     String damages = FormatUtil.formatDbl(event.getDamage());
 

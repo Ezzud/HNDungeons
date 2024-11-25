@@ -95,11 +95,14 @@ public class DungeonInstance {
     }
 
     public void start() {
+        setState(InstanceState.STARTING);
         teleportPartyIn();
         summonEntities();
+        setState(InstanceState.RUNNING);
     }
 
     public void end() {
+        setState(InstanceState.STOPPING);
         teleportPartyOut();
         this.manager.delete(this);
     }
