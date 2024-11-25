@@ -50,21 +50,23 @@ public class DamageListener implements Listener {
             if (event instanceof EntityDamageByEntityEvent entityEvent) {
                 if(entityEvent.getDamager() instanceof Player) {
                     Entity victim = event.getEntity();
-                    Location spawnLocation = RandomUtil.getRandomLocationAround(victim, 0.8);
-                    spawnLocation.setY(spawnLocation.getY() + victim.getHeight() + 0.5);
-                    Location preTeleportLocation = new Location(victim.getWorld(), spawnLocation.getX(), 0, spawnLocation.getZ());
-                    String damages = FormatUtil.formatDbl(event.getDamage());
+                    if(isFromInstance((LivingEntity) victim)) {
+                        Location spawnLocation = RandomUtil.getRandomLocationAround(victim, 0.8);
+                        spawnLocation.setY(spawnLocation.getY() + victim.getHeight() + 0.5);
+                        Location preTeleportLocation = new Location(victim.getWorld(), spawnLocation.getX(), 0, spawnLocation.getZ());
+                        String damages = FormatUtil.formatDbl(event.getDamage());
 
-                    ArmorStand armorStand = (ArmorStand) victim.getWorld().spawnEntity(preTeleportLocation, EntityType.ARMOR_STAND);
-                    armorStand.setInvisible(true);
-                    armorStand.setGravity(false);
-                    armorStand.setCustomName(ChatColor.RED + damages + " ❤");
-                    armorStand.setCustomNameVisible(true);
-                    armorStand.setInvulnerable(true);
-                    armorStand.setMarker(true);
-                    armorStand.teleport(spawnLocation);
+                        ArmorStand armorStand = (ArmorStand) victim.getWorld().spawnEntity(preTeleportLocation, EntityType.ARMOR_STAND);
+                        armorStand.setInvisible(true);
+                        armorStand.setGravity(false);
+                        armorStand.setCustomName(ChatColor.RED + damages + " ❤");
+                        armorStand.setCustomNameVisible(true);
+                        armorStand.setInvulnerable(true);
+                        armorStand.setMarker(true);
+                        armorStand.teleport(spawnLocation);
 
-                    Bukkit.getServer().getScheduler().runTaskLater(plugin, armorStand::remove, 20L);
+                        Bukkit.getServer().getScheduler().runTaskLater(plugin, armorStand::remove, 20L);
+                    }
                 }
             }
         }
