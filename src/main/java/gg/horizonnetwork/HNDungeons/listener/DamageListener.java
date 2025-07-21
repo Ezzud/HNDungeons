@@ -9,20 +9,16 @@ import gg.horizonnetwork.HNDungeons.utils.RandomUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.regex.Pattern;
-
-import static java.util.regex.Pattern.compile;
 
 
 public class DamageListener implements Listener {
@@ -64,6 +60,14 @@ public class DamageListener implements Listener {
                         armorStand.setInvulnerable(true);
                         armorStand.setMarker(true);
                         armorStand.teleport(spawnLocation);
+
+                        Location endLocation = new Location(spawnLocation.getWorld(), spawnLocation.getX(), spawnLocation.getY() -10, spawnLocation.getZ());
+
+                        Vector vec1 = spawnLocation.toVector();
+                        Vector vec2 = endLocation.toVector();
+
+                        Vector move = vec2.subtract(vec1);
+                        armorStand.setVelocity(move);
 
                         Bukkit.getServer().getScheduler().runTaskLater(plugin, armorStand::remove, 20L);
                     }
