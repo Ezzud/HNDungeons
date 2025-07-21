@@ -11,8 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -27,7 +25,6 @@ import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class DungeonMob {
 
@@ -242,7 +239,7 @@ public class DungeonMob {
         LivingEntity en  = (LivingEntity) this.entity;
         en.setVisualFire(false);
         en.setMetadata("isInstanceInvincible", new FixedMetadataValue(HNDungeons.getInstance(), "1"));
-        en.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 1, false, false));
+        en.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, Integer.MAX_VALUE, 1, false, false));
         en.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, Integer.MAX_VALUE, 1, false, false));
         en.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, Integer.MAX_VALUE, 50, false, false));
         this.isInvincible = true;
